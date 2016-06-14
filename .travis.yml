@@ -32,9 +32,13 @@ sudo: false
 cache:
     directories:
         - "~/dht11node/.platformio"
+env:
+    - LATFORMIO_CI_SRC="~/dht11node/src/TemperatureSensorDHT22.ino"
 
 install:
     - pip install -U platformio
+    - platformio lib install 555
+    - platformio lib install 19
 
 script:
     - platformio run
