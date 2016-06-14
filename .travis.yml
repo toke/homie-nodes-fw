@@ -33,7 +33,7 @@ cache:
     directories:
         - "~/dht11node/.platformio"
 env:
-    - LATFORMIO_CI_SRC="~/dht11node/src/TemperatureSensorDHT22.ino"
+    - PLATFORMIO_CI_SRC="~/dht11node/src/TemperatureSensorDHT22.ino"
 
 install:
     - pip install -U platformio
@@ -41,9 +41,11 @@ install:
     - platformio lib install 19
 
 script:
-    - platformio run
+    - platformio ci --project-conf=~/dht11node/platformio.ini
 
 
+
+#- PLATFORMIO_CI_SRC="~/dht11node/src/TemperatureSensorDHT22.ino"
 #
 # Template #2: The project is intended to by used as a library with examples
 #
