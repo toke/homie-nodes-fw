@@ -41,7 +41,7 @@ install:
     - platformio lib install 19
 
 script:
-    - platformio ci --project-conf=~/dht11node/platformio.ini
+    - platformio ci --project-conf=dht11node/platformio.ini
 
 
 
