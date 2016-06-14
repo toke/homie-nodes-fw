@@ -5,6 +5,8 @@
 
 ## dht11node
 
+[![Build Status](https://travis-ci.org/toke/homie-nodes-fw.svg?branch=master)](https://travis-ci.org/toke/homie-nodes-fw)
+
 Simple Sensor Node with DHT11 (DHT22) Humidity/Temperature sensor.
 
 Dependencies: Homie and Adafruit-DHT Library.
