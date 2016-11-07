@@ -22,7 +22,7 @@ const int TEMPERATURE_INTERVAL = 60;
 unsigned long lastTemperatureSent = 0;
 
 HomieNode temperatureNode("temperature", "temperature");
-HomieNode heatindexNode("heatindex", "heatindex");
+HomieNode heatindexNode("heatindex", "temperature");
 HomieNode humidityNode("humidity", "humidity");
 DHT dht(DHTPIN, DHTTYPE);
 
