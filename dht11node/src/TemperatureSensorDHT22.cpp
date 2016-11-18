@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <Homie.h>
 #include "DHT.h"
 #include "DHT_U.h"
@@ -13,13 +14,18 @@ const char *__FLAGGED_FW_VERSION = "\x6a\x3f\x3e\x0e\xe1" FW_VERSION "\xb0\x30\x
 #define DHTPIN D4
 
 // Uncomment whatever type you're using!
-#define DHTTYPE DHT11   // DHT 11
-//#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
+//#define DHTTYPE DHT11   // DHT 11
+#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT21   // DHT 21 (AM2301)
 
 const int TEMPERATURE_INTERVAL = 60;
 
 unsigned long lastTemperatureSent = 0;
+
+
+void setupHandler();
+void loopHandler();
+
 
 HomieNode temperatureNode("temperature", "temperature");
 HomieNode heatindexNode("heatindex", "temperature");
@@ -28,8 +34,8 @@ DHT dht(DHTPIN, DHTTYPE);
 
 void setupHandler() {
   dht.begin();
-  Homie.setNodeProperty(temperatureNode, "unit", "c", true);
-  Homie.setNodeProperty(heatindexNode, "unit", "c", true);
+  Homie.setNodeProperty(temperatureNode, "unit", "°C", true);
+  Homie.setNodeProperty(heatindexNode, "unit", "°C", true);
   Homie.setNodeProperty(humidityNode, "unit", "%", true);
 }
 
