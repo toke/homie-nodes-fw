@@ -5,11 +5,7 @@
 
 
 #define FW_NAME "dht-node"
-#define FW_VERSION "1.0.7"
-
-/* Magic sequence for Autodetectable Binary Upload */
-const char *__FLAGGED_FW_NAME = "\xbf\x84\xe4\x13\x54" FW_NAME "\x93\x44\x6b\xa7\x75";
-const char *__FLAGGED_FW_VERSION = "\x6a\x3f\x3e\x0e\xe1" FW_VERSION "\xb0\x30\x48\xd4\x1a";
+#define FW_VERSION "2.0.0"
 
 #define DHTPIN D4
 
@@ -34,9 +30,9 @@ DHT dht(DHTPIN, DHTTYPE);
 
 void setupHandler() {
   dht.begin();
-  Homie.setNodeProperty(temperatureNode, "unit", "°C", true);
-  Homie.setNodeProperty(heatindexNode, "unit", "°C", true);
-  Homie.setNodeProperty(humidityNode, "unit", "%", true);
+  temperatureNode.setProperty("unit").send("°C");
+  heatindexNode.setProperty("unit").send("°C");
+  humidityNode.setProperty("unit").send("%");
 }
 
 void loopHandler() {
@@ -45,32 +41,30 @@ void loopHandler() {
     float humidity = dht.readHumidity();
 
     if (isnan(humidity) || isnan(temperature)) {
-      Serial.print("Invalid DHT data.");
+      Serial << "Invalid DHT data." << endl;
       return;
     }
 
     float hic = dht.computeHeatIndex(temperature, humidity, false);
 
-    Serial.print("Temperature: ");
-    Serial.print(temperature);
-    Serial.println(" °C");
-    Serial.print("Humidity: ");
-    Serial.print(humidity);
-    Serial.println(" %");
-    if (Homie.setNodeProperty(temperatureNode, "degrees", String(temperature), true)) {
+    Serial << "Temperature: " << temperature << " °C" << endl;
+    Serial << "Heatindex: " << hic << " °C" << endl;
+    Serial << "Humidity: " << humidity << " %" << endl;
+
+    if (temperatureNode.setProperty("degrees").send(String(temperature))) {
       lastTemperatureSent = millis();
     } else {
-      Serial.println("Temperature sending failed");
+      Serial << "Temperature sending failed" << endl;
     }
-    if (Homie.setNodeProperty(humidityNode, "percent", String(humidity), true)) {
+    if (humidityNode.setProperty("percent").send(String(humidity))) {
       lastTemperatureSent = millis();
     } else {
-      Serial.println("Humidity sending failed");
+      Serial << "Humidity sending failed" << endl;
     }
-    if (Homie.setNodeProperty(heatindexNode, "degrees", String(hic), true)) {
+    if (heatindexNode.setProperty("degrees").send(String(hic))) {
       lastTemperatureSent = millis();
     } else {
-      Serial.println("Heatindex sending failed");
+      Serial << "Heatindex sending failed" << endl;
     }
 
   }
@@ -78,14 +72,19 @@ void loopHandler() {
 
 
 void setup() {
-  //Homie.setBrand("MyIoTSystem");
-  Homie.setFirmware(FW_NAME, FW_VERSION);
-  Homie.registerNode(temperatureNode);
-  Homie.registerNode(heatindexNode);
-  Homie.registerNode(humidityNode);
-  Homie.setSetupFunction(setupHandler);
-  //Homie.setResetFunction(resetFunction);
-  Homie.setLoopFunction(loopHandler);
+  Serial.begin(115200);
+  Serial << endl << endl;
+
+  Homie_setFirmware(FW_NAME, FW_VERSION);
+  Homie.setSetupFunction(setupHandler).setLoopFunction(loopHandler);
+
+  temperatureNode.advertise("unit");
+  temperatureNode.advertise("degrees");
+  heatindexNode.advertise("unit");
+  heatindexNode.advertise("degrees");
+  humidityNode.advertise("unit");
+  humidityNode.advertise("percent");
+
   Homie.setup();
 }
 
